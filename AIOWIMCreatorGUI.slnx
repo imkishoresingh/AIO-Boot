@@ -1,3 +1,9 @@
 <Solution>
-  <Project Path="AIOWIMCreatorGUI/AIOWIMCreatorGUI.csproj" />
+  <Project Path="../../../Downloads/yes/AIO_Boot_Installer/AIO_Boot_Installer.vdproj" Type="Installer">
+    <BuildType Project="Release" />
+    <Build Solution="Debug|*" />
+  </Project>
+  <Project Path="AIOWIMCreatorGUI/AIOWIMCreatorGUI.csproj">
+    <BuildType Project="Release" />
+  </Project>
 </Solution>

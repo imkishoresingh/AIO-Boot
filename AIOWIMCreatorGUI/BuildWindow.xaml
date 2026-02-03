@@ -1,0 +1,26 @@
+<Window x:Class="AIOWIMCreatorGUI.BuildWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Build AIO WIM" Height="500" Width="600">
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock Text="Destination WIM Path:"/>
+            <TextBlock x:Name="DestTextBlock" Text="No path selected" Margin="0,0,0,10" Background="LightGray" Padding="5"/>
+            <Button Content="Browse" Click="BrowseButton_Click" Width="80" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Edit Selected Images:"/>
+            <ListBox x:Name="ImagesListBox" Height="250" Margin="0,0,0,10">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Description}" FontStyle="Italic"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Button x:Name="BuildButton" Content="Build" Click="BuildButton_Click" Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>

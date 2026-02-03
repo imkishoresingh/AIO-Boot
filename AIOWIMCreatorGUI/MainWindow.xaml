@@ -1,0 +1,27 @@
+﻿<Window x:Class="AIOWIMCreatorGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AIO WIM Creator - Selected Windows Editions" Height="500" Width="600">
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock Text="Selected Windows Editions:" FontSize="16" FontWeight="Bold"/>
+            <Button Content="Add from WIM/ESD" Click="AddWIMButton_Click" Width="150" Margin="0,0,0,10"/>
+            <Button Content="Remove Selected" Click="RemoveButton_Click" Width="120" Margin="0,0,0,10"/>
+
+            <ListBox x:Name="SourcesListBox" Height="300" Margin="0,0,0,10">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Description}" FontStyle="Italic"/>
+                            <TextBlock Text="{Binding Path}" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Error}" Foreground="Red"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Button x:Name="BuildButton" Content="Build AIO WIM" Click="BuildButton_Click" Width="150" IsEnabled="False"/>
+        </StackPanel>
+    </Grid>
+</Window>

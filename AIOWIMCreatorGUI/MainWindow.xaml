@@ -1,27 +1,183 @@
 ﻿<Window x:Class="AIOWIMCreatorGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="AIO WIM Creator - Selected Windows Editions" Height="500" Width="600">
+        Title="AIOBoot - AIO Windows Installation Media" Height="600" Width="800" MinHeight="500" MinWidth="650"
+        Background="#F5F5F5" FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Modern Button Style -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#106EBE"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F0F0F0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <StackPanel Margin="20">
-            <TextBlock Text="Selected Windows Editions:" FontSize="16" FontWeight="Bold"/>
-            <Button Content="Add from WIM/ESD" Click="AddWIMButton_Click" Width="150" Margin="0,0,0,10"/>
-            <Button Content="Remove Selected" Click="RemoveButton_Click" Width="120" Margin="0,0,0,10"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="151*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Header -->
+        <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" 
+                Height="80" VerticalAlignment="Top" Grid.ColumnSpan="2">
+            <StackPanel Margin="32,0" VerticalAlignment="Center">
+                <TextBlock Text="AIOBoot" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
+                <TextBlock Text="Create All-in-One Windows installation media" 
+                           FontSize="13" Foreground="#666666" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
 
-            <ListBox x:Name="SourcesListBox" Height="300" Margin="0,0,0,10">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Description}" FontStyle="Italic"/>
-                            <TextBlock Text="{Binding Path}" Foreground="Gray"/>
-                            <TextBlock Text="{Binding Error}" Foreground="Red"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+        <!-- Main Content -->
+        <Grid Margin="32,80,32,32" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <Button x:Name="BuildButton" Content="Build AIO WIM" Click="BuildButton_Click" Width="150" IsEnabled="False"/>
-        </StackPanel>
+            <!-- Toolbar -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+                <Button Content="➕ Add from WIM/ESD" Click="AddWIMButton_Click" 
+                        Width="187" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0"/>
+                <Button Content="💿 Add from ISO" Click="AddFromISOButton_Click" 
+                        Width="150" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0"/>
+                <Button Content="🗑️ Remove" Click="RemoveButton_Click" 
+                        Width="115" Style="{StaticResource SecondaryButton}"/>
+            </StackPanel>
+
+            <!-- Edition List -->
+            <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" 
+                    BorderThickness="1" CornerRadius="4" Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- List Header -->
+                    <Border Grid.Row="0" Background="#FAFAFA" BorderBrush="#E0E0E0" 
+                            BorderThickness="0,0,0,1" Padding="16,12">
+                        <TextBlock Text="SELECTED EDITIONS" FontSize="11" FontWeight="SemiBold" 
+                                   Foreground="#666666"/>
+                    </Border>
+
+                    <!-- List Content -->
+                    <ListBox Grid.Row="1" x:Name="SourcesListBox" BorderThickness="0" 
+                             Background="Transparent" Padding="8">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0,0,0,8"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    BorderBrush="#E0E0E0" BorderThickness="1" 
+                                                    CornerRadius="4" Padding="16">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F8F8F8"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Text="{Binding Name}" 
+                                               FontWeight="SemiBold" FontSize="15" Foreground="#333333"/>
+                                    <TextBlock Grid.Row="1" Text="{Binding Description}" 
+                                               FontSize="12" Foreground="#666666" Margin="0,4,0,0"/>
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
+                                        <TextBlock Text="📁" FontSize="11" Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding Path}" FontSize="11" 
+                                                   Foreground="#999999" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="2" Text="{Binding Error}" 
+                                               Foreground="#D32F2F" FontSize="12" Margin="0,6,0,0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Empty State -->
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <TextBlock Text="📂" FontSize="48" HorizontalAlignment="Center" Opacity="0.3"/>
+                        <TextBlock Text="No editions selected" FontSize="16" 
+                                   Foreground="#999999" HorizontalAlignment="Center" Margin="0,12,0,0"/>
+                        <TextBlock Text="Click 'Add from WIM/ESD' or 'Add from ISO' to get started" 
+                                   FontSize="13" Foreground="#BBBBBB" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Build Button -->
+            <Button Grid.Row="2" x:Name="BuildButton" Content="🔨 Build AIO WIM" 
+                    Click="BuildButton_Click" Width="200" Height="44"
+                    IsEnabled="False" Style="{StaticResource PrimaryButton}" 
+                    HorizontalAlignment="Right" Margin="0,16,0,0" FontSize="15"/>
+        </Grid>
     </Grid>
 </Window>

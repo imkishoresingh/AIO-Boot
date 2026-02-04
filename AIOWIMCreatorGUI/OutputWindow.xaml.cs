@@ -8,8 +8,11 @@ namespace AIOWIMCreatorGUI
 {
     public partial class OutputWindow : Window
     {
-        public OutputWindow(string destPath, List<(string sourcePath, ImageInfo image)> exports)
+        private List<string> tempPaths;
+
+        public OutputWindow(string destPath, List<(string sourcePath, ImageInfo image)> exports, List<string> tempPaths)
         {
+            this.tempPaths = tempPaths;
             InitializeComponent();
             ProgressBar.Visibility = Visibility.Visible;
             ProgressTextBox.Text = "Initializing build...\n";
@@ -55,7 +58,23 @@ namespace AIOWIMCreatorGUI
 
                 ProgressTextBox.Text += "Success!\n";
                 ProgressBar.Visibility = Visibility.Hidden;
-                Process.Start("explorer.exe", Path.GetDirectoryName(destPath)); // Open folder
+                MessageBoxResult result = MessageBox.Show("Build completed successfully. Do you want to open the output folder?", "Completed", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start("explorer.exe", Path.GetDirectoryName(destPath));
+                }
+                // Delete temp folders
+                foreach (var temp in tempPaths)
+                {
+                    try
+                    {
+                        Directory.Delete(temp, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        ProgressTextBox.Text += $"Warning: Failed to delete temp folder {temp}: {ex.Message}\n";
+                    }
+                }
             }
             catch (Exception ex)
             {
